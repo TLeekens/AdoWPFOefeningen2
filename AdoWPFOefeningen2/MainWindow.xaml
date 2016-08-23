@@ -2,7 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:glob="clr-namespace:System.Globalization;assembly=mscorlib"
-        Title="MainWindow" Height="400" Width="400" Loaded="Window_Loaded">
+        xmlns:local="clr-namespace:AdoWPFOefeningen2"
+        Title="Opdracht 9" Height="400" Width="400" Loaded="Window_Loaded">
+    <Window.Resources>
+        <ControlTemplate x:Key="validationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" DockPanel.Dock="Bottom" Text="{Binding [0].ErrorContent}"></TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="70">
             <Label Content="Kies een soort:" VerticalAlignment="Center" Margin="20, 10"></Label>
@@ -43,11 +52,17 @@
                     </TextBox.Text>
                 </TextBox>
                 <Label Content="Prijs:" Height="24" Width="90" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"></Label>
-                <TextBox Name="textBoxVerkoopPrijs" Height="24" Width="90" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center">
+                <AdornerDecorator Grid.Row="3" Grid.Column="1">
+                <TextBox Name="textBoxVerkoopPrijs" Height="24" Width="90" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}">
                     <TextBox.Text>
-                        <Binding Path="VerkoopPrijs" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ConverterCulture="{x:Static glob:CultureInfo.CurrentCulture}" StringFormat="c4"></Binding>
+                        <Binding Path="VerkoopPrijs" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnExceptions="True" NotifyOnValidationError="True" ConverterCulture="{x:Static glob:CultureInfo.CurrentCulture}" StringFormat="c4">
+                            <Binding.ValidationRules>
+                                <local:VerkoopPrijsRangeRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
                     </TextBox.Text>
                 </TextBox>
+                </AdornerDecorator>
             </Grid>
         </DockPanel>
     </DockPanel>
