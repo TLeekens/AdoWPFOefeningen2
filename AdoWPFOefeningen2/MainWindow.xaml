@@ -1,0 +1,14 @@
+﻿<Window x:Class="AdoWPFOefeningen2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="400" Loaded="Window_Loaded">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="70">
+            <Label Content="Kies een soort:" VerticalAlignment="Center" Margin="20, 10"></Label>
+            <ComboBox Name="comboBoxSoort" Height="24" Width="160" Margin="70, 10" SelectionChanged="comboBoxSoort_SelectionChanged"></ComboBox>
+        </StackPanel>
+        <DockPanel>
+            <ListBox Name="listBoxPlant" DockPanel.Dock="Left" Margin="15"></ListBox>
+        </DockPanel>
+    </DockPanel>
+</Window>
