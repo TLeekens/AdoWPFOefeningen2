@@ -32,6 +32,8 @@ namespace AdoWPFOefeningen2
         {
             try
             {
+                listBoxPlant.DisplayMemberPath = "Naam";
+
                 comboBoxSoort.DisplayMemberPath = "SoortNaam";
                 comboBoxSoort.SelectedValuePath = "SoortNr";
                 comboBoxSoort.ItemsSource = soortManager.GetSoortenMetOptieAllemaalVoorop();
@@ -49,7 +51,7 @@ namespace AdoWPFOefeningen2
             {
                 listBoxPlant.Items.Clear();
                 int soortNr = Convert.ToInt32(comboBoxSoort.SelectedValue);
-                var allePlanten = plantManager.GetPlantenNamen(soortNr);
+                var allePlanten = plantManager.GetPlanten(soortNr);
                 foreach (var eenPlant in allePlanten)
                 {
                     listBoxPlant.Items.Add(eenPlant);
