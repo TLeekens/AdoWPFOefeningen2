@@ -14,6 +14,7 @@ namespace AdoConnections
         private Int32 levnrValue;
         private String kleurValue;
         private Decimal verkoopPrijsValue;
+        private bool changedValue;
 
         public Int32 PlantNr
         {
@@ -64,6 +65,7 @@ namespace AdoConnections
             set
             {
                 kleurValue = value;
+                Changed = true;
             }
         }
         public Decimal VerkoopPrijs
@@ -75,6 +77,18 @@ namespace AdoConnections
             set
             {
                 verkoopPrijsValue = value;
+                Changed = true;
+            }
+        }
+        public bool Changed
+        {
+            get
+            {
+                return changedValue;
+            }
+            set
+            {
+                changedValue = value;
             }
         }
 
@@ -86,6 +100,7 @@ namespace AdoConnections
             Levnr = levnr;
             Kleur = kleur;
             VerkoopPrijs = verkoopPrijs;
+            Changed = false;
         }
 
         public override string ToString()

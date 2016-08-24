@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:glob="clr-namespace:System.Globalization;assembly=mscorlib"
         xmlns:local="clr-namespace:AdoWPFOefeningen2"
-        Title="Opdracht 9" Height="400" Width="400" Loaded="Window_Loaded">
+        Title="Opdracht 9" Height="400" Width="450" Loaded="Window_Loaded">
     <Window.Resources>
         <ControlTemplate x:Key="validationTemplate">
             <DockPanel>
@@ -15,14 +15,14 @@
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="70">
             <Label Content="Kies een soort:" VerticalAlignment="Center" Margin="20, 10"></Label>
-            <ComboBox Name="comboBoxSoort" Height="24" Width="160" Margin="70, 10" SelectionChanged="comboBoxSoort_SelectionChanged"></ComboBox>
+            <ComboBox Name="comboBoxSoort" Height="24" Width="160" Margin="70, 10" SelectionChanged="comboBoxSoort_SelectionChanged" PreviewMouseDown="comboBoxSoort_PreviewMouseDown"></ComboBox>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Height="40">
-            <Button Name="buttonOpslaan" Content="Opslaan" Width="160" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50, 5"></Button>
+            <Button Name="buttonOpslaan" Content="Opslaan" Width="160" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50, 5" Click="buttonOpslaan_Click"></Button>
         </StackPanel>
         <DockPanel>
-            <ListBox Name="listBoxPlant" DockPanel.Dock="Left" Width="140" Margin="15"></ListBox>
-            <Grid Name="gridPlant" Width="210" DockPanel.Dock="Right" Margin="5" DataContext="{Binding ElementName=listBoxPlant, Path=SelectedItem}">
+            <ListBox Name="listBoxPlant" DockPanel.Dock="Left" Width="140" Margin="15" PreviewMouseDown="listBoxPlant_PreviewMouseDown"></ListBox>
+            <Grid Name="gridPlant" Width="240" DockPanel.Dock="Right" Margin="0" DataContext="{Binding ElementName=listBoxPlant, Path=SelectedItem}">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -30,30 +30,36 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Plantnummer:" Height="24" Width="90" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Label>
-                <TextBox Name="textBoxPlantNr" Height="24" Width="90" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" IsReadOnly="True">
+                <Label Content="Plantnummer:" Height="24" Width="90" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
+                <TextBox Name="textBoxPlantNr" Height="24" Width="90" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" IsReadOnly="True">
                     <TextBox.Text>
                         <Binding Path="PlantNr" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"></Binding>
                     </TextBox.Text>
                 </TextBox>
-                <Label Content="Leverancier:" Height="24" Width="90" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"></Label>
-                <TextBox Name="textBoxLevnr" Height="24" Width="90" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsReadOnly="True">
+                <Label Content="Leverancier:" Height="24" Width="90" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
+                <TextBox Name="textBoxLevnr" Height="24" Width="90" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" IsReadOnly="True">
                     <TextBox.Text>
                         <Binding Path="Levnr" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"></Binding>
                     </TextBox.Text>
                 </TextBox>
-                <Label Content="Kleur:" Height="24" Width="90" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"></Label>
-                <TextBox Name="textBoxKleur" Height="24" Width="90" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">
+                <Label Content="Kleur:" Height="24" Width="90" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
+                <AdornerDecorator Grid.Row="2" Grid.Column="1">
+                <TextBox Name="textBoxKleur" Height="24" Width="90" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" TextChanged="textBoxKleur_TextChanged">
                     <TextBox.Text>
-                        <Binding Path="Kleur" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"></Binding>
+                        <Binding Path="Kleur" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <local:KleurIngevuldRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
                     </TextBox.Text>
                 </TextBox>
-                <Label Content="Prijs:" Height="24" Width="90" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"></Label>
+                </AdornerDecorator>
+                <Label Content="Prijs:" Height="24" Width="90" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
                 <AdornerDecorator Grid.Row="3" Grid.Column="1">
-                <TextBox Name="textBoxVerkoopPrijs" Height="24" Width="90" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}">
+                <TextBox Name="textBoxVerkoopPrijs" Height="24" Width="90" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" TextChanged="textBoxVerkoopPrijs_TextChanged">
                     <TextBox.Text>
                         <Binding Path="VerkoopPrijs" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay" ValidatesOnExceptions="True" NotifyOnValidationError="True" ConverterCulture="{x:Static glob:CultureInfo.CurrentCulture}" StringFormat="c4">
                             <Binding.ValidationRules>

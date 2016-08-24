@@ -23,6 +23,8 @@ namespace AdoWPFOefeningen2
     {
         SoortManager soortManager = new SoortManager();
         PlantManager plantManager = new PlantManager();
+        public List<Plant> gewijzigdePlanten = new List<Plant>();
+        public List<Plant> listBoxPLantenLijst = new List<Plant>();
         public MainWindow()
         {
             InitializeComponent();
@@ -49,18 +51,103 @@ namespace AdoWPFOefeningen2
         {
             try
             {
-                listBoxPlant.Items.Clear();
-                int soortNr = Convert.ToInt32(comboBoxSoort.SelectedValue);
-                var allePlanten = plantManager.GetPlanten(soortNr);
-                foreach (var eenPlant in allePlanten)
-                {
-                    listBoxPlant.Items.Add(eenPlant);
-                }
+                Int32 soortNr = 0;
+                soortNr = Convert.ToInt32(comboBoxSoort.SelectedValue);
+                listBoxPLantenLijst = plantManager.GetPlanten(soortNr);
+                //foreach (var eenPlant in allePlanten)
+                //{
+                //    listBoxPlant.Items.Add(eenPlant);
+                //}
+                listBoxPlant.ItemsSource = listBoxPLantenLijst;
+                listBoxPlant.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private bool WijzigingenOpslaan()
+        {
+            try
+            {
+                if (Validation.GetHasError(textBoxKleur) == true || Validation.GetHasError(textBoxVerkoopPrijs) == true)
+                {
+                    MessageBox.Show("Gelieve eerst de fouten op te lossen", "Opgelet", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                string vraag;
+                if (comboBoxSoort.SelectedIndex == 0)
+                    vraag = "Wilt u uw wijzigingen opslaan?";
+                else
+                    vraag = String.Format("Gewijzigde planten van soort '{0}' opslaan?", comboBoxSoort.SelectedItem.ToString());
+                if (gewijzigdePlanten.Count > 0)
+                {
+                    if (MessageBox.Show(vraag, "Wijzigingen", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                    {
+                        plantManager.SchrijfWijzigingen(gewijzigdePlanten);
+                        gewijzigdePlanten.Clear();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        private void textBoxKleur_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (listBoxPlant.SelectedItem != null)
+            {
+                Plant plant = (Plant)listBoxPlant.SelectedItem;
+                if (plant.Changed == true)
+                    gewijzigdePlanten.Add(plant); 
+            }
+        }
+
+        private void textBoxVerkoopPrijs_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (listBoxPlant.SelectedItem != null)
+            {
+                Plant plant = (Plant)listBoxPlant.SelectedItem;
+                if (plant.Changed == true)
+                    gewijzigdePlanten.Add(plant);
+            }
+        }
+
+        private void comboBoxSoort_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!WijzigingenOpslaan())
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void listBoxPlant_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Validation.GetHasError(textBoxKleur) == true || Validation.GetHasError(textBoxVerkoopPrijs) == true)
+            {
+                MessageBox.Show("Gelieve eerst de fouten op te lossen", "Opgelet", MessageBoxButton.OK, MessageBoxImage.Error);
+                e.Handled = true;
+            }
+        }
+
+        private void buttonOpslaan_Click(object sender, RoutedEventArgs e)
+        {
+            if (gewijzigdePlanten.Count == 0)
+                MessageBox.Show("Er zijn geen wijzigingen op te slaan");
+            else if (WijzigingenOpslaan())
+                MessageBox.Show("Wijzigingen succesvol opgeslagen");
+            else
+                MessageBox.Show("Geen wijzigingen opgeslagen");
         }
     }
 }

@@ -92,5 +92,42 @@ namespace AdoConnections
             }
             return planten;
         }
+
+        public void SchrijfWijzigingen (List<Plant> planten)
+        {
+            var manager = new TuincentrumDbManager();
+
+            using (var conTuincentrum = manager.GetConnection())
+            {
+                using (var comWijzigingen = conTuincentrum.CreateCommand())
+                {
+                    comWijzigingen.CommandType = CommandType.Text;
+                    comWijzigingen.CommandText = "update planten set Kleur=@kleur, VerkoopPrijs=@verkoopprijs where PlantNr=@plantnr";
+
+                    var parKleur = comWijzigingen.CreateParameter();
+                    parKleur.ParameterName = "@kleur";
+                    comWijzigingen.Parameters.Add(parKleur);
+
+                    var parPrijs = comWijzigingen.CreateParameter();
+                    parPrijs.ParameterName = "@verkoopprijs";
+                    comWijzigingen.Parameters.Add(parPrijs);
+
+                    var parPlantNr = comWijzigingen.CreateParameter();
+                    parPlantNr.ParameterName = "@plantnr";
+                    comWijzigingen.Parameters.Add(parPlantNr);
+
+                    conTuincentrum.Open();
+
+                    foreach (var eenPlant in planten)
+                    {
+                        parPlantNr.Value = eenPlant.PlantNr;
+                        parKleur.Value = eenPlant.Kleur;
+                        parPrijs.Value = eenPlant.VerkoopPrijs;
+
+                        comWijzigingen.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }

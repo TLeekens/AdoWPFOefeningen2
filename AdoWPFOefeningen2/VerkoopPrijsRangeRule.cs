@@ -15,6 +15,11 @@ namespace AdoWPFOefeningen2
             Decimal verkoopPrijs = 0;
             NumberStyles style = NumberStyles.Currency;
 
+            if (value == null || (String)value == String.Empty)
+            {
+                return new ValidationResult(false, "Prijs moet ingevuld zijn");
+            }
+
             if (!Decimal.TryParse(value.ToString(), style, cultureInfo, out verkoopPrijs))
             {
                 return new ValidationResult(false, "Prijs moet een getal zijn");
