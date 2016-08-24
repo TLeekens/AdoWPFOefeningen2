@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Leverancier.cs" />
+    <Compile Include="LeverancierManager.cs" />
     <Compile Include="Plant.cs" />
     <Compile Include="PlantManager.cs" />
     <Compile Include="Soort.cs" />
