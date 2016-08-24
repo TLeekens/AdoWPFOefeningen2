@@ -76,5 +76,31 @@ namespace AdoConnections
             }
             return postnummers;
         }
+
+        public void SchrijfVerwijderingen(List<Leverancier> leveranciers)
+        {
+            var manager = new TuincentrumDbManager();
+
+            using (var conTuincentrum = manager.GetConnection())
+            {
+                using (var comDelete = conTuincentrum.CreateCommand())
+                {
+                    comDelete.CommandType = CommandType.Text;
+                    comDelete.CommandText = "delete from leveranciers where levnr=@levnr";
+
+                    var parLevNr = comDelete.CreateParameter();
+                    parLevNr.ParameterName = "@levnr";
+                    comDelete.Parameters.Add(parLevNr);
+
+                    conTuincentrum.Open();
+
+                    foreach (Leverancier eenLeverancier in leveranciers)
+                    {
+                        parLevNr.Value = eenLeverancier.LevNr;
+                        comDelete.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }

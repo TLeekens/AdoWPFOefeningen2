@@ -10,6 +10,9 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="Kies postnummer:" Height="28" Margin="10, 0"></Label>
             <ComboBox Name="comboBoxPostNr" Height="28" Width="90" Margin="10, 0" SelectionChanged="comboBoxPostNr_SelectionChanged"></ComboBox>
+            <Button Name="buttonSave" Height="28" Width="28" Click="buttonSave_Click">
+                <Image Source=".\images\SaveHL.bmp"/>
+            </Button> 
         </StackPanel>
         <Border DataContext="{StaticResource leverancierViewSource}" BorderBrush="Black" BorderThickness="1">
         <DataGrid x:Name="leverancierDataGrid" RowDetailsVisibilityMode="VisibleWhenSelected" ItemsSource="{Binding}" EnableRowVirtualization="True" AutoGenerateColumns="False">

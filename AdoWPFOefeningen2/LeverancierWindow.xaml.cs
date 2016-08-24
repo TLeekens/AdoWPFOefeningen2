@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using AdoConnections;
+using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace AdoWPFOefeningen2
 {
@@ -22,6 +24,8 @@ namespace AdoWPFOefeningen2
     {
         CollectionViewSource leverancierViewSource;
         LeverancierManager manager = new LeverancierManager();
+        ObservableCollection<Leverancier> leveranciers = new ObservableCollection<Leverancier>();
+        List<Leverancier> oudeLeveranciers = new List<Leverancier>();
         public LeverancierWindow()
         {
             InitializeComponent();
@@ -32,7 +36,10 @@ namespace AdoWPFOefeningen2
             try
             {
                 leverancierViewSource = ((CollectionViewSource)(this.FindResource("leverancierViewSource")));
-                leverancierViewSource.Source = manager.GetLeveranciersVolgensNaam("<alles>");
+                leveranciers = manager.GetLeveranciersVolgensNaam("<alles>");
+                leverancierViewSource.Source = leveranciers;
+
+                leveranciers.CollectionChanged += this.OnCollectionChanged;
 
                 comboBoxPostNr.ItemsSource = manager.GetPostNrsMetAllesVoorop();
                 comboBoxPostNr.SelectedIndex = 0;
@@ -46,6 +53,28 @@ namespace AdoWPFOefeningen2
         private void comboBoxPostNr_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             leverancierViewSource.Source = manager.GetLeveranciersVolgensNaam((String)comboBoxPostNr.SelectedValue);
+        }
+
+        void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (Leverancier lev in e.OldItems)
+                {
+                    oudeLeveranciers.Add(lev);
+                }
+            }
+        }
+
+        private void buttonSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (oudeLeveranciers.Count != 0)
+            {
+                manager.SchrijfVerwijderingen(oudeLeveranciers);
+            }
+            oudeLeveranciers.Clear();
+
+            MessageBox.Show("Alle wijzigingen zijn opgeslagen");
         }
     }
 }
