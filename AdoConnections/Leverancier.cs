@@ -82,6 +82,11 @@ namespace AdoConnections
             }
         }
 
+        public Leverancier()
+        {
+
+        }
+
         public Leverancier (Int32 levNr, String naam, String adres, String postNr, String woonplaats)
         {
             levNrValue = levNr;

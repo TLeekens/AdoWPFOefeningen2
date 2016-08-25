@@ -102,5 +102,47 @@ namespace AdoConnections
                 }
             }
         }
+
+        public void SchrijfToevoegingen(List<Leverancier> leveranciers)
+        {
+            var manager = new TuincentrumDbManager();
+
+            using (var conTuincentrum = manager.GetConnection())
+            {
+                using (var comInsert = conTuincentrum.CreateCommand())
+                {
+                    comInsert.CommandType = CommandType.Text;
+                    comInsert.CommandText = "insert into leveranciers (naam, adres, postnr, woonplaats) values (@naam, @adres, @postnr, @woonplaats)";
+
+                    var parNaam = comInsert.CreateParameter();
+                    parNaam.ParameterName = "@naam";
+                    comInsert.Parameters.Add(parNaam);
+
+                    var parAdres = comInsert.CreateParameter();
+                    parAdres.ParameterName = "@adres";
+                    comInsert.Parameters.Add(parAdres);
+
+                    var parPostNr = comInsert.CreateParameter();
+                    parPostNr.ParameterName = "@postnr";
+                    comInsert.Parameters.Add(parPostNr);
+
+                    var parWoonplaats = comInsert.CreateParameter();
+                    parWoonplaats.ParameterName = "@woonplaats";
+                    comInsert.Parameters.Add(parWoonplaats);
+
+                    conTuincentrum.Open();
+
+                    foreach (Leverancier lev in leveranciers)
+                    {
+                        parNaam.Value = lev.Naam;
+                        parAdres.Value = lev.Adres;
+                        parPostNr.Value = lev.PostNr;
+                        parWoonplaats.Value = lev.Woonplaats;
+
+                        comInsert.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace AdoWPFOefeningen2
         LeverancierManager manager = new LeverancierManager();
         ObservableCollection<Leverancier> leveranciers = new ObservableCollection<Leverancier>();
         List<Leverancier> oudeLeveranciers = new List<Leverancier>();
+        List<Leverancier> nieuweLeveranciers = new List<Leverancier>();
         public LeverancierWindow()
         {
             InitializeComponent();
@@ -52,16 +53,26 @@ namespace AdoWPFOefeningen2
 
         private void comboBoxPostNr_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            leverancierViewSource.Source = manager.GetLeveranciersVolgensNaam((String)comboBoxPostNr.SelectedValue);
+            leveranciers = manager.GetLeveranciersVolgensNaam((String)comboBoxPostNr.SelectedValue);
+            leverancierViewSource.Source = leveranciers;
+            leveranciers.CollectionChanged -= this.OnCollectionChanged;
+            leveranciers.CollectionChanged += this.OnCollectionChanged;
         }
 
-        void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.OldItems != null)
             {
                 foreach (Leverancier lev in e.OldItems)
                 {
                     oudeLeveranciers.Add(lev);
+                }
+            }
+            if (e.NewItems != null)
+            {
+                foreach (Leverancier lev in e.NewItems)
+                {
+                    nieuweLeveranciers.Add(lev);
                 }
             }
         }
@@ -73,6 +84,11 @@ namespace AdoWPFOefeningen2
                 manager.SchrijfVerwijderingen(oudeLeveranciers);
             }
             oudeLeveranciers.Clear();
+
+            if (nieuweLeveranciers.Count != 0)
+            {
+                manager.SchrijfToevoegingen(nieuweLeveranciers);
+            }
 
             MessageBox.Show("Alle wijzigingen zijn opgeslagen");
         }
