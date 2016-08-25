@@ -27,6 +27,8 @@ namespace AdoWPFOefeningen2
         ObservableCollection<Leverancier> leveranciers = new ObservableCollection<Leverancier>();
         List<Leverancier> oudeLeveranciers = new List<Leverancier>();
         List<Leverancier> nieuweLeveranciers = new List<Leverancier>();
+        List<Leverancier> gewijzigdeLeveranciers = new List<Leverancier>();
+            
         public LeverancierWindow()
         {
             InitializeComponent();
@@ -77,20 +79,41 @@ namespace AdoWPFOefeningen2
             }
         }
 
-        private void buttonSave_Click(object sender, RoutedEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (oudeLeveranciers.Count != 0)
+            if (MessageBox.Show("Wilt u alles wegschrijven naar de database?", "Opslaan", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
-                manager.SchrijfVerwijderingen(oudeLeveranciers);
-            }
-            oudeLeveranciers.Clear();
+                if (oudeLeveranciers.Count != 0)
+                {
+                    manager.SchrijfVerwijderingen(oudeLeveranciers);
+                }
+                oudeLeveranciers.Clear();
 
-            if (nieuweLeveranciers.Count != 0)
+                if (nieuweLeveranciers.Count != 0)
+                {
+                    manager.SchrijfToevoegingen(nieuweLeveranciers);
+                }
+                nieuweLeveranciers.Clear();
+
+                foreach (Leverancier lev in leveranciers)
+                {
+                    if (lev.Changed)
+                    {
+                        gewijzigdeLeveranciers.Add(lev);
+                        lev.Changed = false;
+                    }
+                }
+                if (gewijzigdeLeveranciers.Count != 0)
+                {
+                    manager.SchrijfWijzigingen(gewijzigdeLeveranciers);
+                }
+
+                MessageBox.Show("Alle wijzigingen zijn opgeslagen");
+            }
+            else
             {
-                manager.SchrijfToevoegingen(nieuweLeveranciers);
+                e.Cancel = true;
             }
-
-            MessageBox.Show("Alle wijzigingen zijn opgeslagen");
         }
     }
 }

@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:AdoConnections="clr-namespace:AdoConnections;assembly=AdoConnections" mc:Ignorable="d" x:Class="AdoWPFOefeningen2.LeverancierWindow"
-        Title="LeverancierWindow" SizeToContent="Width" Loaded="Window_Loaded">
+        Title="LeverancierWindow" SizeToContent="Width" Loaded="Window_Loaded" Closing="Window_Closing">
     <Window.Resources>
         <CollectionViewSource x:Key="leverancierViewSource" d:DesignSource="{d:DesignInstance {x:Type AdoConnections:Leverancier}, CreateList=True}"/>
     </Window.Resources>
@@ -10,9 +10,6 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="Kies postnummer:" Height="28" Margin="10, 0"></Label>
             <ComboBox Name="comboBoxPostNr" Height="28" Width="90" Margin="10, 0" SelectionChanged="comboBoxPostNr_SelectionChanged"></ComboBox>
-            <Button Name="buttonSave" Height="28" Width="28" Click="buttonSave_Click">
-                <Image Source=".\images\SaveHL.bmp"/>
-            </Button> 
         </StackPanel>
         <Border DataContext="{StaticResource leverancierViewSource}" BorderBrush="Black" BorderThickness="1">
         <DataGrid x:Name="leverancierDataGrid" RowDetailsVisibilityMode="VisibleWhenSelected" ItemsSource="{Binding}" EnableRowVirtualization="True" AutoGenerateColumns="False">

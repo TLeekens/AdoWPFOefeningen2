@@ -144,5 +144,52 @@ namespace AdoConnections
                 }
             }
         }
+
+        public void SchrijfWijzigingen(List<Leverancier> leveranciers)
+        {
+            var manager = new TuincentrumDbManager();
+
+            using (var conTuincentrum = manager.GetConnection())
+            {
+                using (var comUpdate = conTuincentrum.CreateCommand())
+                {
+                    comUpdate.CommandType = CommandType.Text;
+                    comUpdate.CommandText = "update leveranciers set naam=@naam, adres=@adres, postnr=@postnr, woonplaats=@woonplaats where levnr=@levnr";
+
+                    var parNaam = comUpdate.CreateParameter();
+                    parNaam.ParameterName = "@naam";
+                    comUpdate.Parameters.Add(parNaam);
+
+                    var parAdres = comUpdate.CreateParameter();
+                    parAdres.ParameterName = "@adres";
+                    comUpdate.Parameters.Add(parAdres);
+
+                    var parPostNr = comUpdate.CreateParameter();
+                    parPostNr.ParameterName = "@postnr";
+                    comUpdate.Parameters.Add(parPostNr);
+
+                    var parWoonplaats = comUpdate.CreateParameter();
+                    parWoonplaats.ParameterName = "@woonplaats";
+                    comUpdate.Parameters.Add(parWoonplaats);
+
+                    var parLevNr = comUpdate.CreateParameter();
+                    parLevNr.ParameterName = "@levnr";
+                    comUpdate.Parameters.Add(parLevNr);
+
+                    conTuincentrum.Open();
+
+                    foreach (Leverancier lev in leveranciers)
+                    {
+                        parNaam.Value = lev.Naam;
+                        parAdres.Value = lev.Adres;
+                        parPostNr.Value = lev.PostNr;
+                        parWoonplaats.Value = lev.Woonplaats;
+                        parLevNr.Value = lev.LevNr;
+
+                        comUpdate.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }
